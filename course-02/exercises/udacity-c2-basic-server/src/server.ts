@@ -1,4 +1,4 @@
-import express, { Router, Request, Response } from 'express';
+import express, { Router, Request, Response, json } from 'express';
 // import bodyParser from 'body-parser'; deprecated
 const bodyParser = require('body-parser')
 
@@ -72,6 +72,28 @@ import { Car, cars as cars_list } from './cars';
 
   // @TODO Add an endpoint to GET a list of cars
   // it should be filterable by make with a query paramater
+
+  // Get a specific car via query param
+  // > try it {{host}}/cars?make=car_make
+  app.get( "/cars/", ( req: Request, res: Response ) => {
+    let { make } = req.query;
+
+    if ( !make ) {
+      return res.status(400)
+                .send(`make is required`);
+    }
+
+    let list: Car[] = [];
+
+    cars_list.forEach(element => {
+      if (element.make === make)
+        list.push(element);
+    });
+
+    return res.status(200)
+              .send(`List of cars made by ${make} is: ${list}!`);
+  } );
+
 
   // @TODO Add an endpoint to get a specific car
   // it should require id
